@@ -1,0 +1,9 @@
+http://chat.onyxaxis.org {
+    # Flexible mode reaches the origin over HTTP even for HTTPS visitors.
+    @httpVisitors header X-Forwarded-Proto http
+    redir @httpVisitors https://chat.onyxaxis.org{uri} 308
+
+    reverse_proxy 127.0.0.1:8090 {
+        flush_interval -1
+    }
+}

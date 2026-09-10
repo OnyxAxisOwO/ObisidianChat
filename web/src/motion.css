@@ -1,0 +1,203 @@
+/* Keep palette transitions before the motion classes so they cannot replace panel travel. */
+.panel,
+.panel-slot,
+.avatar,
+.bubble,
+input,
+textarea,
+select {
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+/* Match OA's deceleration and fixed-width panel travel: the contents never squeeze. */
+.panel-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 var(--panel-width);
+  width: var(--panel-width);
+  min-height: 0;
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+.panel-slot > .side-panel {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+.panel-slide-enter-active,
+.panel-slide-leave-active {
+  transition:
+    margin-right var(--motion-panel) var(--motion-ease),
+    opacity 220ms ease;
+}
+.panel-slide-enter-from,
+.panel-slide-leave-to {
+  margin-right: calc(-1 * (var(--panel-width) + var(--panel-gap)));
+  opacity: 0;
+}
+.panel-slide-leave-active {
+  pointer-events: none;
+}
+.panel-content-enter-active,
+.workspace-view-enter-active {
+  transition:
+    transform var(--motion-pane) var(--motion-ease),
+    opacity var(--motion-pane) ease;
+}
+.panel-content-leave-active,
+.workspace-view-leave-active {
+  transition: opacity 110ms ease;
+  pointer-events: none;
+}
+.panel-content-enter-from {
+  transform: translateX(18px);
+  opacity: 0;
+}
+.workspace-view-enter-from {
+  transform: translateY(10px);
+  opacity: 0;
+}
+.panel-content-leave-to,
+.workspace-view-leave-to {
+  opacity: 0;
+}
+
+.tabs {
+  position: relative;
+  isolation: isolate;
+}
+.tabs::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc((100% - 8px) / 3);
+  border-radius: 999px;
+  background: var(--card);
+  transform: translateX(calc(var(--tab-index, 0) * (100% + 4px)));
+  transition:
+    transform var(--motion-panel) var(--motion-ease),
+    background-color 180ms ease;
+  z-index: -1;
+}
+.tabs .active {
+  background: transparent;
+}
+.tabs button {
+  position: relative;
+}
+.contact-list,
+.auth-form {
+  animation: oc-rise var(--motion-pane) var(--motion-ease);
+}
+.messages,
+.message-enter {
+  animation: oc-rise var(--motion-panel) var(--motion-ease);
+}
+.contact-row.selected .contact-title strong {
+  animation: oc-row-mark var(--motion-panel) var(--motion-ease);
+}
+.admin-main.pane-forward {
+  animation: oc-forward var(--motion-pane) var(--motion-ease);
+}
+.admin-main.pane-back {
+  animation: oc-back var(--motion-pane) var(--motion-ease);
+}
+.icon-btn:active:not(:disabled),
+.primary:active:not(:disabled) {
+  transform: scale(0.95);
+}
+.switch span {
+  transition:
+    transform 180ms var(--motion-ease),
+    background-color 180ms ease;
+}
+/* This selector must retain the geometry transitions declared on the contact rail. */
+.contacts {
+  transition:
+    width var(--motion-panel) var(--motion-ease),
+    margin-left var(--motion-panel) var(--motion-ease),
+    opacity 220ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+.composer {
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+@keyframes oc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes oc-row-mark {
+  from {
+    opacity: 0.4;
+    transform: translateX(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes oc-forward {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes oc-back {
+  from {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@media (max-width: 640px) {
+  .panel-slot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    z-index: 3;
+  }
+  .panel-slide-enter-active,
+  .panel-slide-leave-active {
+    transition:
+      transform var(--motion-pane) var(--motion-ease),
+      opacity 200ms ease;
+  }
+  .panel-slide-enter-from,
+  .panel-slide-leave-to {
+    margin-right: 0;
+    transform: translateX(24px);
+  }
+  .layout.has-room .chat {
+    animation: oc-forward var(--motion-pane) var(--motion-ease);
+  }
+  .layout:not(.has-room) .contacts {
+    animation: oc-back var(--motion-pane) var(--motion-ease);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

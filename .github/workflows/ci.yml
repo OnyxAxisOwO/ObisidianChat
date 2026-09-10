@@ -1,0 +1,33 @@
+name: check
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: npm ci && npm test && npm run build
+        working-directory: web
+      - run: test -z "$(gofmt -l cmd internal web/embed.go)"
+      - run: go vet ./...
+      - run: go test -race ./...
+      - run: go build -trimpath -ldflags="-s -w" -o bin/obsidianchat ./cmd/obsidianchat
+      - run: docker build -t obsidianchat-ci .
+      - name: Docker health
+        run: |
+          docker run -d --name oc-ci -p 127.0.0.1:8090:8090 obsidianchat-ci
+          trap 'docker logs oc-ci; docker rm -f oc-ci' EXIT
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8090/healthz; then exit 0; fi
+            sleep 1
+          done
+          exit 1
