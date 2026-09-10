@@ -1,6 +1,6 @@
 # 当前部署
 
-部署时间：2026-09-10。首次部署使用独立数据目录，未上传本机的用户和聊天数据。
+最近部署时间：2026-09-10 16:53。首次部署使用独立数据目录，未上传本机的用户和聊天数据。
 
 | 项目 | 当前值 |
 | --- | --- |
@@ -13,9 +13,9 @@
 | 环境配置 | `/etc/obsidianchat/server.env`，仅 root 可读 |
 | 数据目录 | `/data/obsidianchat`，运行账号独占 |
 | 程序入口 | `/opt/obsidianchat/current/obsidianchat` |
-| 当前版本目录 | `/opt/obsidianchat/releases/202609100920` |
+| 当前版本目录 | `/opt/obsidianchat/releases/202609101655` |
 | Linux 程序大小 | 11,325,600 B |
-| 程序 SHA256 | `cb0963f8e99399f94718d44b8d6f54d892451633097b311d1b12998ddf84058d` |
+| 程序 SHA256 | `284b063f435c45359ac9420b49c7f25baeb5162cdf53b7e888cdd78a9c1a22ca` |
 | 防火墙 | 已撤销 TCP 8090 公网规则；应用仅监听回环地址 |
 | 启动策略 | 开机启动，失败后 2 秒重启 |
 | 资源边界 | Go 软内存限制 192 MiB，systemd MemoryHigh 256 MiB / MemoryMax 512 MiB，文件描述符 65,536 |
@@ -47,3 +47,5 @@ curl -fsS http://127.0.0.1:8090/healthz
 后续维护保持 Cloudflare 灵活模式和聊天站点的显式 `http://` 地址。不要将聊天站点改为源站强制 HTTPS，否则会使当前回源方式产生重定向循环。只有用户明确要求变更加密模式时，再迁移源站 TLS。
 
 更新前备份数据；上传到新的版本目录并核对 SHA256，再切换 `current` 链接并重启服务。`install.sh` 提供程序版本切换和健康检查失败时的旧版本回退，但不执行数据库降级；含 schema 变更的版本需单独规划迁移和备份。
+
+2026-09-10 16:53 更新前的数据备份位于 `/opt/obsidianchat/backups/before-202609101655.tar.gz`。
