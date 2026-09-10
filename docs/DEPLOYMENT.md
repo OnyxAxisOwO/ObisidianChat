@@ -8,7 +8,7 @@
 
 ```text
 OC_ADDR=127.0.0.1:8090
-OC_DATABASE=/var/lib/obsidianchat/chat.db
+OC_DATABASE=/data/obsidianchat/chat.db
 OC_ORIGIN=https://chat.example.com
 OC_SECURE_COOKIE=true
 ```

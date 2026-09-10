@@ -10,11 +10,11 @@ cd "$(dirname "$0")"
 printf '%s  %s\n' "$expected_hash" obsidianchat | sha256sum -c -
 
 if ! id obsidianchat >/dev/null 2>&1; then
-  useradd --system --home-dir /var/lib/obsidianchat --shell /usr/sbin/nologin obsidianchat
+  useradd --system --home-dir /data/obsidianchat --shell /usr/sbin/nologin obsidianchat
 fi
 install -d -m 0755 /opt/obsidianchat/releases
 install -d -m 0750 -o root -g obsidianchat /etc/obsidianchat
-install -d -m 0700 -o obsidianchat -g obsidianchat /var/lib/obsidianchat
+install -d -m 0700 -o obsidianchat -g obsidianchat /data/obsidianchat
 install -d -m 0755 "/opt/obsidianchat/releases/$release"
 install -m 0755 obsidianchat "/opt/obsidianchat/releases/$release/obsidianchat"
 
@@ -25,7 +25,7 @@ path = '/etc/obsidianchat/server.env'
 fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
 with os.fdopen(fd, 'w') as env:
     env.write('OC_ADDR=0.0.0.0:8090\n')
-    env.write('OC_DATABASE=/var/lib/obsidianchat/chat.db\n')
+    env.write('OC_DATABASE=/data/obsidianchat/chat.db\n')
     env.write('OC_ORIGIN=http://156.239.242.24:8090\n')
     env.write('OC_SECURE_COOKIE=false\n')
     env.write('OC_SETUP_TOKEN=' + secrets.token_hex(24) + '\n')

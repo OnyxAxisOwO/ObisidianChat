@@ -11,7 +11,7 @@
 | 运行账号 | `obsidianchat`，禁止交互登录 |
 | systemd 单元 | `/etc/systemd/system/obsidianchat.service` |
 | 环境配置 | `/etc/obsidianchat/server.env`，仅 root 可读 |
-| 数据目录 | `/var/lib/obsidianchat`，运行账号独占 |
+| 数据目录 | `/data/obsidianchat`，运行账号独占 |
 | 程序入口 | `/opt/obsidianchat/current/obsidianchat` |
 | 当前版本目录 | `/opt/obsidianchat/releases/202609100920` |
 | Linux 程序大小 | 11,325,600 B |
