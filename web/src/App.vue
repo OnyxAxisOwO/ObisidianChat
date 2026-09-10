@@ -32,6 +32,7 @@ import RoomPanel from "./RoomPanel.vue";
 import AccountPanel from "./AccountPanel.vue";
 import { useChat } from "./useChat";
 import { time, errorText, newClientID } from "./api";
+import type { Message } from "./types";
 const AdminView = defineAsyncComponent(() => import("./AdminView.vue"));
 const {
   me,
@@ -252,6 +253,15 @@ async function older() {
 }
 const day = (at: number) =>
   new Date(at).toLocaleDateString("zh-CN", { month: "long", day: "numeric" });
+const messageGroupWindow = 5 * 60 * 1000;
+function sameMessageGroup(message: Message, adjacent?: Message) {
+  return (
+    !!adjacent &&
+    message.sender === adjacent.sender &&
+    day(message.created_at) === day(adjacent.created_at) &&
+    Math.abs(message.created_at - adjacent.created_at) <= messageGroupWindow
+  );
+}
 onMounted(boot);
 </script>
 <template>
@@ -541,14 +551,28 @@ onMounted(boot);
                   class="message-row"
                   :class="{
                     mine: message.sender === me.id,
+                    'group-start': !sameMessageGroup(
+                      message,
+                      messages[i - 1],
+                    ),
+                    'group-end': !sameMessageGroup(message, messages[i + 1]),
                     'message-enter': enteringMessages.has(message.id),
                   }"
                 >
-                  <span v-if="message.sender !== me.id" class="avatar small">{{
-                    message.name.slice(0, 1)
-                  }}</span>
+                  <span
+                    v-if="message.sender !== me.id"
+                    class="message-avatar-slot"
+                  >
+                    <span
+                      v-if="!sameMessageGroup(message, messages[i + 1])"
+                      class="avatar small"
+                      >{{ message.name.slice(0, 1) }}</span
+                    >
+                  </span>
                   <div class="message-content">
-                    <span class="message-meta"
+                    <span
+                      v-if="!sameMessageGroup(message, messages[i - 1])"
+                      class="message-meta"
                       >{{ message.sender === me.id ? "我" : message.name }}
                       <time>{{ time(message.created_at) }}</time></span
                     >
